@@ -1,0 +1,7 @@
+CREATE TABLE nodes (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    latitude NUMERIC(10,7) NOT NULL,
+    longitude NUMERIC(10,7) NOT NULL,
+    type VARCHAR(50)
+);
