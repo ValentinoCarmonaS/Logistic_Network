@@ -1,0 +1,49 @@
+### Archivos específicos de Spring Boot ###
+# Configuraciones locales/credenciales
+src/main/resources/application-dev.properties
+
+### Variables de entorno ###
+.env
+.env.local
+.env.*
+!.env.example
+
+### IDE ###
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+bin/
+.vscode/
+
+### Build ###
+target/
+build/
+out/
+*.jar
+*.war
+*.ear
+*.class
+
+### Logs ###
+*.log
+logs/
+
+### Database ###
+# Archivos de DB local (H2, SQLite, etc.)
+*.db
+*.mv.db
+*.trace.db
+
+### Sistema Operativo ###
+.DS_Store
+Thumbs.db
+
+### Flyway (opcional) ###
+# Si usas migraciones con esquemas temporales
+flyway-*.sql
+
+HELP.md
