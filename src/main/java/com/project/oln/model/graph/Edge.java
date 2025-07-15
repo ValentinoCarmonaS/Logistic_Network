@@ -1,12 +1,14 @@
 package com.project.oln.model.graph;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 @Entity
-public class Edges {
+public class Edge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,19 +35,47 @@ public class Edges {
     @NotNull(message = "The origin is obligatory")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "origin_id", nullable = false)
-    private Long originId; 
+    private Node origin; 
 
     @NotNull(message = "The destiny is obligatory")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "destiny_id", nullable = false)
-    private Long destinyId; 
+    private Node destiny; 
 
-    public Edges(BigDecimal distanceKm, BigDecimal timeMin, BigDecimal costUsd, String description, Long originId, Long destinyId) {
+    public Edge(Long id, BigDecimal distanceKm, BigDecimal timeMin, BigDecimal costUsd, String description, Node originId, Node destinyId) {
+        this.id = id;
         this.distanceKm = distanceKm;
         this.timeMin = timeMin;
         this.costUsd = costUsd;
         this.description = description;
-        this.originId = originId;
-        this.destinyId = destinyId;
+        this.origin = originId;
+        this.destiny = destinyId;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public boolean nodesIn(Map<Long, List<Edge>> nodes) {
+        if (nodes == null || nodes.isEmpty()) {
+            return false;
+        }
+        return (nodes.containsKey(this.origin.getId()) || nodes.containsKey(this.destiny.getId()));
+    }
+
+    public Node getOrigin() {
+        return this.origin;
+    }
+
+    public Node getDestiny() {
+        return this.destiny;
+    }
+
+    public Object getOriginId() {
+        return this.origin.getId();
+    }
+
+    public Object getDestinyId() {
+        return this.destiny.getId();
     }
 }

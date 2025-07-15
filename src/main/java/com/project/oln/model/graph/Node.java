@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 @Entity
-public class Nodes {
+public class Node {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,10 +30,15 @@ public class Nodes {
     @Column(name = "type", nullable = false)
     private NodesType type;
 
-    public Nodes(String name, BigDecimal latitude, BigDecimal longitude, NodesType type) {
+    public Node(Long id, String name, BigDecimal latitude, BigDecimal longitude, NodesType type) {
+        this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
+    }
+    
+    public Long getId() {
+        return this.id;
     }
 }
