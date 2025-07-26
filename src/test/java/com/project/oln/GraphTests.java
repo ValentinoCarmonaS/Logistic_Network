@@ -1,6 +1,7 @@
 package com.project.oln;
 
 import com.project.oln.model.graph.*;
+import com.project.oln.model.graph.aux.DijkstraResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -146,5 +147,18 @@ class GraphTests {
     @Test
     void testGetAllEdges() {
         assertEquals(graph.numberOfEdges(), graph.getEdges().size());
+    }
+
+    @Test
+    void testShortestPath() {
+        DijkstraResult res1 = graph.shortestPath((long) 1, (long) 5, Edge::getCostUsd);
+        DijkstraResult res2 = graph.shortestPath((long) 2, (long) 6, Edge::getCostUsd);
+        DijkstraResult res3 = graph.shortestPath((long) 1, (long) 4, Edge::getCostUsd);
+        DijkstraResult res4 = graph.shortestPath((long) 4, (long) 3, Edge::getCostUsd);
+
+        assertEquals(0, BigDecimal.valueOf(6).compareTo(res1.getDist()) );
+        assertEquals(0, BigDecimal.valueOf(6).compareTo(res2.getDist()) );
+        assertEquals(0, BigDecimal.valueOf(4).compareTo(res3.getDist()) );
+        assertEquals(0, BigDecimal.valueOf(6).compareTo(res4.getDist()) );
     }
 }
