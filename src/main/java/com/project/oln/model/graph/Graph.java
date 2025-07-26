@@ -3,12 +3,14 @@ package com.project.oln.model.graph;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.function.Function;
 
 import com.project.oln.exceptions.OperationNotAllowedException;
-import com.project.oln.model.graph.aux.DijkstraResult;
+import com.project.oln.model.graph.aux.PathResult;
 import com.project.oln.model.graph.aux.NodeDistance;
 
 public class Graph {
@@ -52,7 +54,33 @@ public class Graph {
         this.numberOfEdges++;
     }
 
-    public DijkstraResult shortestPath(Long origin, Long destiny, Function<Edge, BigDecimal> weightSelector) {
+    public PathResult bfsPath(Long origin) {
+        HashMap<Long, Long> father = new HashMap<>();
+        HashMap<Long, BigDecimal> lvl = new HashMap<>();
+        HashMap<Long, Boolean> visit = new HashMap<>();
+        Queue<Long> queue = new LinkedList<>();
+        
+        father.put(origin, null);
+        lvl.put(origin, BigDecimal.ZERO);
+        visit.put(origin, true);
+        queue.add(origin);
+
+        while (!queue.isEmpty()) {
+            Long v = queue.remove();
+            for (Edge edge : nodes.get(v)) {
+                if (!visit.containsKey(edge.getDestinyId())) {
+                    father.put(edge.getDestinyId(), v);
+                    lvl.put(edge.getDestinyId(), lvl.get(v).add(BigDecimal.ONE));
+                    visit.put(edge.getDestinyId(), true);
+                    queue.add(edge.getDestinyId());
+                }
+            }
+        }
+
+        return new PathResult(origin, null, father, lvl);
+    }
+
+    public PathResult shortestPath(Long origin, Long destiny, Function<Edge, BigDecimal> weightSelector) {
         HashMap<Long, BigDecimal> dist = new HashMap<>();
         HashMap<Long, Long> father = new HashMap<>();
         PriorityQueue<NodeDistance> pq = new PriorityQueue<>(NodeDistance::cmp);
@@ -70,7 +98,7 @@ public class Graph {
             NodeDistance v = pq.remove();
 
             if (v.getNodeId().equals(destiny)) {
-                return new DijkstraResult(origin, destiny, father, dist);
+                return new PathResult(origin, destiny, father, dist);
             }
 
             for (Edge e : this.nodes.get(v.getNodeId())) {
@@ -86,7 +114,7 @@ public class Graph {
             }
         }
 
-        return new DijkstraResult(origin, destiny, father, dist);
+        return new PathResult(origin, destiny, father, dist);
     }
 
     public int numberOfNodes() {
