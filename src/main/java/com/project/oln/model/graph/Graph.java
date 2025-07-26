@@ -43,7 +43,7 @@ public class Graph {
         if (!edge.nodesIn(this.nodes)) {
             throw new OperationNotAllowedException("The nodes or one node doesn't exist");
         }
-        
+
         this.nodes.get(edge.getOriginId()).add(edge);
         
         Edge otherEdge = edge.opposite();
@@ -52,7 +52,7 @@ public class Graph {
         this.numberOfEdges++;
     }
 
-    public DijkstraResult shortestPath(Node origin, Node destiny, Function<Edge, BigDecimal> weightSelector) {
+    public DijkstraResult shortestPath(Long origin, Long destiny, Function<Edge, BigDecimal> weightSelector) {
         HashMap<Long, BigDecimal> dist = new HashMap<>();
         HashMap<Long, Long> father = new HashMap<>();
         PriorityQueue<NodeDistance> pq = new PriorityQueue<>(NodeDistance::cmp);
@@ -61,16 +61,16 @@ public class Graph {
             dist.put(v, this.infinity);
         }
 
-        father.put(origin.getId(), null);
-        dist.put(origin.getId(), new BigDecimal(0));
-        pq.add(new NodeDistance(origin.getId(), new BigDecimal(0)));
+        father.put(origin, null);
+        dist.put(origin, new BigDecimal(0));
+        pq.add(new NodeDistance(origin, new BigDecimal(0)));
 
         while (!pq.isEmpty()) {
 
             NodeDistance v = pq.remove();
 
-            if (v.getNodeId().equals(destiny.getId())) {
-                return new DijkstraResult(father, dist);
+            if (v.getNodeId().equals(destiny)) {
+                return new DijkstraResult(origin, destiny, father, dist);
             }
 
             for (Edge e : this.nodes.get(v.getNodeId())) {
@@ -86,7 +86,7 @@ public class Graph {
             }
         }
 
-        return new DijkstraResult(father, dist);
+        return new DijkstraResult(origin, destiny, father, dist);
     }
 
     public int numberOfNodes() {

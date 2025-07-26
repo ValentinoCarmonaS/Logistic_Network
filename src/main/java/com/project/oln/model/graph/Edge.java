@@ -82,4 +82,21 @@ public class Edge {
     public Long getDestinyId() {
         return this.destiny.getId();
     }
+
+    public BigDecimal getDistanceKm() {
+        return distanceKm;
+    }
+
+    public BigDecimal getTimeMin() {
+        return timeMin;
+    }
+
+    public BigDecimal getCostUsd() {
+        return costUsd;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }
