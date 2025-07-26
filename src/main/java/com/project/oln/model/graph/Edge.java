@@ -60,7 +60,7 @@ public class Edge {
         if (nodes == null || nodes.isEmpty()) {
             return false;
         }
-        return (nodes.containsKey(this.origin.getId()) || nodes.containsKey(this.destiny.getId()));
+        return (nodes.containsKey(this.origin.getId()) && nodes.containsKey(this.destiny.getId()));
     }
 
     public Node getOrigin() {
@@ -71,11 +71,11 @@ public class Edge {
         return this.destiny;
     }
 
-    public Object getOriginId() {
+    public Long getOriginId() {
         return this.origin.getId();
     }
 
-    public Object getDestinyId() {
+    public Long getDestinyId() {
         return this.destiny.getId();
     }
 }
