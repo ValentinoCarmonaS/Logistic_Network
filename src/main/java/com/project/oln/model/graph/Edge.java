@@ -63,6 +63,10 @@ public class Edge {
         return (nodes.containsKey(this.origin.getId()) && nodes.containsKey(this.destiny.getId()));
     }
 
+    public Edge opposite() {
+        return new Edge(this.id*2, this.distanceKm, this.timeMin, this.costUsd, "Opposite Edge", this.destiny, this.origin);
+    }
+
     public Node getOrigin() {
         return this.origin;
     }

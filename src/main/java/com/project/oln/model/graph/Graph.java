@@ -12,11 +12,16 @@ import com.project.oln.model.graph.aux.DijkstraResult;
 import com.project.oln.model.graph.aux.NodeDistance;
 
 public class Graph {
-    private HashMap<Long, List<Edge>> nodes;
+    
     private final BigDecimal infinity = BigDecimal.valueOf(Double.MAX_VALUE);
+    private HashMap<Long, List<Edge>> nodes;
+    private int numberOfEdges;
+    private int numberOfNodes;
     
     public Graph(List<Edge> edges) {
         this.nodes = new HashMap<>();
+        this.numberOfEdges = 0;
+        this.numberOfNodes = 0;
 
         if (edges != null) {
             for (Edge edge : edges) {
@@ -30,15 +35,21 @@ public class Graph {
     public void addNode(Node node) {
         if (!this.nodes.containsKey(node.getId())) {
             this.nodes.put(node.getId(), new ArrayList<>());
+            this.numberOfNodes++;
         }
     }
 
     public void addEdge(Edge edge) {
-        if (!edge.nodesIn(nodes)) {
+        if (!edge.nodesIn(this.nodes)) {
             throw new OperationNotAllowedException("The nodes or one node doesn't exist");
         }
-        nodes.get(edge.getOriginId()).add(edge);
-        nodes.get(edge.getDestinyId()).add(edge);
+        
+        this.nodes.get(edge.getOriginId()).add(edge);
+        
+        Edge otherEdge = edge.opposite();
+        this.nodes.get(edge.getDestinyId()).add(otherEdge);
+        
+        this.numberOfEdges++;
     }
 
     public DijkstraResult shortestPath(Node origin, Node destiny, Function<Edge, BigDecimal> weightSelector) {
@@ -46,7 +57,7 @@ public class Graph {
         HashMap<Long, Long> father = new HashMap<>();
         PriorityQueue<NodeDistance> pq = new PriorityQueue<>(NodeDistance::cmp);
 
-        for (Long v : nodes.keySet()) {
+        for (Long v : this.nodes.keySet()) {
             dist.put(v, this.infinity);
         }
 
@@ -62,7 +73,7 @@ public class Graph {
                 return new DijkstraResult(father, dist);
             }
 
-            for (Edge e : nodes.get(v.getNodeId())) {
+            for (Edge e : this.nodes.get(v.getNodeId())) {
                 Long w = e.getDestinyId(); 
                 BigDecimal weigth = weightSelector.apply(e);
                 BigDecimal pathToHere = v.getDistance().add(weigth);
@@ -76,5 +87,29 @@ public class Graph {
         }
 
         return new DijkstraResult(father, dist);
+    }
+
+    public int numberOfNodes() {
+        return this.numberOfNodes;
+    }
+
+    public int numberOfEdges() {
+        return this.numberOfEdges;
+    }
+
+    public List<Edge> getEdges() {
+        List<Edge> edges = new ArrayList<>();
+        HashMap<Long, Boolean> vist = new HashMap<>();
+
+        for (Long v : this.nodes.keySet()) {
+            for (Edge edge : this.nodes.get(v)) {
+                if (!vist.containsKey(edge.getDestinyId())) {
+                    edges.add(edge);
+                }
+            }
+            vist.put(v, true);
+        }
+
+        return edges;
     }
 }

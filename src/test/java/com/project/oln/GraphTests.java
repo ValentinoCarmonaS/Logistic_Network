@@ -2,23 +2,26 @@ package com.project.oln;
 
 import com.project.oln.model.graph.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.project.oln.model.graph.Edge;
 import com.project.oln.model.graph.enums.NodesType;
 
 @SpringBootTest
 class GraphTests {
     
-    @Test
-    void testGrafo() {
+    private static Graph graph;
+
+    @BeforeAll
+    static void setUp() {
         // Crear nodos A-F
         Node nodeA = new Node((long) 1, "A", new BigDecimal("0.0000000"), new BigDecimal("0.0000000"), NodesType.INTERSECTION);
         Node nodeB = new Node((long) 2, "B", new BigDecimal("1.0000000"), new BigDecimal("0.0000000"), NodesType.INTERSECTION);
@@ -130,9 +133,18 @@ class GraphTests {
         ));
 
         // Crear el grafo
-        Graph graph = new Graph(edges);
-        
-        // Verificar que el grafo se haya creado correctamente
+        graph = new Graph(edges);
+    }
+
+    @Test
+    void testGraphBase() {
         assertNotNull(graph, "El grafo no debe ser null");
+        assertEquals(6, graph.numberOfNodes(), "El grafo debe contener 6 nodos: A-B-C-D-E-F");
+        assertEquals(9, graph.numberOfEdges(), "El grafo debe contener 9 aristas");
+    }
+
+    @Test
+    void testGetAllEdges() {
+        assertEquals(graph.numberOfEdges(), graph.getEdges().size());
     }
 }
